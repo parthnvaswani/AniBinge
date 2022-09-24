@@ -1,6 +1,7 @@
 package com.example.kuro;
 
 import com.example.kuro.pojo.Anime;
+import com.example.kuro.pojo.AnimeInfo;
 import com.example.kuro.pojo.Animes;
 
 import retrofit2.Call;
@@ -13,7 +14,13 @@ public interface APIInterface {
     @GET("{search}")
     Call<Animes> searchAnime(@Path("search") String search, @Query("page") int page);
 
-//    @GET("random-anime")
-//    Call<Anime> randomAnime();
+    @GET("random-anime")
+    Call<AnimeInfo> randomAnime();
+
+    @GET("popular")
+    Call<Animes> popularAnime(@Query("page") int page);
+
+    @GET("trending")
+    Call<Animes> trendingAnime(@Query("page") int page);
 
 }

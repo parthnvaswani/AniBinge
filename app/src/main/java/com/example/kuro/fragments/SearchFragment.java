@@ -48,47 +48,42 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        try {
-            animes = new ArrayList<>();
+        animes = new ArrayList<>();
 
-            recyclerView = view.findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
-            animeAdaptar = new AnimeAdaptar(animes);
-            recyclerView.setAdapter(animeAdaptar);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
+        animeAdaptar = new AnimeAdaptar(animes);
+        recyclerView.setAdapter(animeAdaptar);
 
-            searchView=view.findViewById(R.id.searchView);
+        searchView=view.findViewById(R.id.searchView);
 
-            apiInterface = APIClient.getClient().create(APIInterface.class);
+        apiInterface = APIClient.getClient().create(APIInterface.class);
 
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String s) {
-                    Call<Animes> call = apiInterface.searchAnime(s,1);
-                    call.enqueue(new Callback<Animes>() {
-                        @Override
-                        public void onResponse(Call<Animes> call, Response<Animes> response) {
-                            Animes resource = response.body();
-                            animes.clear();
-                            animes.addAll(resource.results);
-                            animeAdaptar.notifyDataSetChanged();
-                        }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                Call<Animes> call = apiInterface.searchAnime(s,1);
+                call.enqueue(new Callback<Animes>() {
+                    @Override
+                    public void onResponse(Call<Animes> call, Response<Animes> response) {
+                        Animes resource = response.body();
+                        animes.clear();
+                        animes.addAll(resource.results);
+                        animeAdaptar.notifyDataSetChanged();
+                    }
 
-                        @Override
-                        public void onFailure(Call<Animes> call, Throwable t) {
-                            call.cancel();
-                        }
-                    });
-                    return false;
-                }
+                    @Override
+                    public void onFailure(Call<Animes> call, Throwable t) {
+                        call.cancel();
+                    }
+                });
+                return false;
+            }
 
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    return false;
-                }
-            });
-        }
-        catch (Exception e){
-            Log.i("hello",e.getMessage());
-        }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
     }
 }
