@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager2=findViewById(R.id.viewPager);
         viewPagerAdaptar=new ViewPagerAdaptar(this);
         viewPager2.setAdapter(viewPagerAdaptar);
+        viewPager2.setUserInputEnabled(false);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

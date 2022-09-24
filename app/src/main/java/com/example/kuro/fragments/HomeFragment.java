@@ -5,11 +5,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +36,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
-    private TextView textView,textView2;
+    private TextView textView,textView2,textView3,textView4;
     private ImageView imageView;
     private APIInterface apiInterface;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView1;
     private RecyclerView recyclerView2;
     private AnimeAdaptar animeAdaptar1;
@@ -47,7 +47,11 @@ public class HomeFragment extends Fragment {
     private List<Anime> trendingAnimes;
     private ProgressBar progressBar;
     private ProgressBar progressBar2;
+    private CardView synopsis;
     private String randomAnimeId="";
+
+    int page1=1,page2=1;
+    boolean hasNextPage1=true,hasNextPage2=true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,9 +64,12 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         textView=getView().findViewById(R.id.animeId);
         textView2=getView().findViewById(R.id.textView2);
+        textView3=getView().findViewById(R.id.textView);
+        textView4=getView().findViewById(R.id.textView5);
         imageView=getView().findViewById(R.id.imageView);
         progressBar=getView().findViewById(R.id.progressBar);
         progressBar2=getView().findViewById(R.id.progressBar2);
+        synopsis=getView().findViewById(R.id.synopsis);
 
         popularAnimes = new ArrayList<>();
         trendingAnimes=new ArrayList<>();
@@ -79,14 +86,6 @@ public class HomeFragment extends Fragment {
 
         apiInterface = APIClient.getClient().create(APIInterface.class);
 
-        swipeRefreshLayout = getView().findViewById(R.id.pullToRefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getRandomAnime();
-            }
-        });
-
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,25 +97,80 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        getRandomAnime();
+        textView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(randomAnimeId!=null&&randomAnimeId!="") {
+                    synopsis.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        synopsis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                synopsis.setVisibility(View.GONE);
+            }
+        });
+
+        recyclerView1.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(!recyclerView1.canScrollHorizontally(1)){
+                    if(hasNextPage1) {
+                        page1++;
+                        getPopularAnime();
+                    }
+                }
+            }
+        });
+
+        recyclerView2.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(!recyclerView2.canScrollHorizontally(1)){
+                    if(hasNextPage2) {
+                        page2++;
+                        getTrendingAnime();
+                    }
+                }
+            }
+        });
+
+
+        getRandomAnime(view);
         getPopularAnime();
         getTrendingAnime();
     }
 
-    public void getRandomAnime(){
+    public void getRandomAnime(View view){
         Call<AnimeInfo> call = apiInterface.randomAnime();
         call.enqueue(new Callback<AnimeInfo>() {
             @Override
             public void onResponse(Call<AnimeInfo> call, Response<AnimeInfo> response) {
                 AnimeInfo anime = response.body();
-                textView.setText(anime.title.romaji);
-                textView2.setText(anime.desc);
-                Picasso.get().load(anime.image)
-                        .placeholder(R.drawable.ic_baseline_broken_image_24)
-                        .error(R.drawable.ic_baseline_broken_image_24)
-                        .into(imageView);
-                randomAnimeId=anime.id;
-                swipeRefreshLayout.setRefreshing(false);
+                String title="No Title";
+                if(anime!=null) {
+                    if (anime.title.romaji != null) title = anime.title.romaji;
+                    else if (anime.title.english != null) title = anime.title.english;
+                    else if (anime.title.nati != null) title = anime.title.nati;
+
+                    textView.setText(title);
+                    textView3.setText(title);
+                    textView2.setText(Html.fromHtml(anime.desc, Html.FROM_HTML_MODE_COMPACT));
+                    textView4.setText(Html.fromHtml(anime.desc, Html.FROM_HTML_MODE_COMPACT));
+
+                    Picasso.get().load(anime.image)
+                            .placeholder(R.drawable.ic_baseline_broken_image_24)
+                            .error(R.drawable.ic_baseline_broken_image_24)
+                            .into(imageView);
+                    randomAnimeId = anime.id;
+                }
+                else {
+                    getRandomAnime(view);
+                }
             }
 
             @Override
@@ -127,12 +181,12 @@ public class HomeFragment extends Fragment {
     }
 
     public void getPopularAnime(){
-        Call<Animes> call = apiInterface.popularAnime(1);
+        Call<Animes> call = apiInterface.popularAnime(page1);
         call.enqueue(new Callback<Animes>() {
             @Override
             public void onResponse(Call<Animes> call, Response<Animes> response) {
                 Animes resource = response.body();
-                popularAnimes.clear();
+                hasNextPage1=resource.hasNextPage;
                 popularAnimes.addAll(resource.results);
                 animeAdaptar1.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
@@ -147,12 +201,12 @@ public class HomeFragment extends Fragment {
     }
 
     public void getTrendingAnime(){
-        Call<Animes> call = apiInterface.trendingAnime(1);
+        Call<Animes> call = apiInterface.trendingAnime(page2);
         call.enqueue(new Callback<Animes>() {
             @Override
             public void onResponse(Call<Animes> call, Response<Animes> response) {
                 Animes resource = response.body();
-                trendingAnimes.clear();
+                hasNextPage2=resource.hasNextPage;
                 trendingAnimes.addAll(resource.results);
                 animeAdaptar2.notifyDataSetChanged();
                 progressBar2.setVisibility(View.GONE);

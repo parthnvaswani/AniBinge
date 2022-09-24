@@ -37,6 +37,9 @@ public class SearchFragment extends Fragment {
     SearchView searchView;
     AnimeAdaptar animeAdaptar;
     List<Anime> animes;
+    String query="";
+    int page=1;
+    boolean hasNextPage=true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,27 +65,47 @@ public class SearchFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Call<Animes> call = apiInterface.searchAnime(s,1);
-                call.enqueue(new Callback<Animes>() {
-                    @Override
-                    public void onResponse(Call<Animes> call, Response<Animes> response) {
-                        Animes resource = response.body();
-                        animes.clear();
-                        animes.addAll(resource.results);
-                        animeAdaptar.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onFailure(Call<Animes> call, Throwable t) {
-                        call.cancel();
-                    }
-                });
+                query=s;
+                page=1;
+                searchAnime(s,true);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(!recyclerView.canScrollVertically(1)){
+                    if(hasNextPage) {
+                        page++;
+                        searchAnime(query,false);
+                    }
+                }
+            }
+        });
+    }
+
+    public void searchAnime(String s,boolean clearAll){
+        Call<Animes> call = apiInterface.searchAnime(s,page);
+        call.enqueue(new Callback<Animes>() {
+            @Override
+            public void onResponse(Call<Animes> call, Response<Animes> response) {
+                Animes resource = response.body();
+                hasNextPage=resource.hasNextPage;
+                if(clearAll)animes.clear();
+                animes.addAll(resource.results);
+                animeAdaptar.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<Animes> call, Throwable t) {
+                call.cancel();
             }
         });
     }

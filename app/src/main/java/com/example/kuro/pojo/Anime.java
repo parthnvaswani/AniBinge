@@ -13,6 +13,10 @@ public class Anime {
     public static class Title{
         @SerializedName("romaji")
         public String romaji;
+        @SerializedName("english")
+        public String english;
+        @SerializedName("native")
+        public String nati;
     }
 }
 
