@@ -26,7 +26,6 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/black"
             android:iconifiedByDefault="false"
             android:queryHint="Search"
             app:layout_constraintBottom_toBottomOf="parent"
