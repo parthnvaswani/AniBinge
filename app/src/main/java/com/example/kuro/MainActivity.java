@@ -3,6 +3,7 @@ package com.example.kuro;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.kuro.adaptars.ViewPagerAdaptar;

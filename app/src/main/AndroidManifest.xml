@@ -14,10 +14,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Kuro"
+        android:name=".GlobalState"
         tools:targetApi="31">
         <activity
+            android:name=".AnimePlayer"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".AnimePage"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

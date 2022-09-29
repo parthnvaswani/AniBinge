@@ -14,6 +14,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,6 +33,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -77,14 +84,22 @@ public class HomeFragment extends Fragment {
         recyclerView1 = view.findViewById(R.id.popularAnimes);
         recyclerView1.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
         animeAdaptar1 = new AnimeAdaptar(popularAnimes);
-        recyclerView1.setAdapter(animeAdaptar1);
+        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(animeAdaptar1);
+        scaleInAnimationAdapter.setDuration(400);
+        scaleInAnimationAdapter.setInterpolator(new OvershootInterpolator(1f));
+        scaleInAnimationAdapter.setFirstOnly(false);
+        recyclerView1.setAdapter(scaleInAnimationAdapter);
 
         recyclerView2 = view.findViewById(R.id.trendingAnimes);
         recyclerView2.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
         animeAdaptar2 = new AnimeAdaptar(trendingAnimes);
-        recyclerView2.setAdapter(animeAdaptar2);
+        ScaleInAnimationAdapter scaleInAnimationAdapter2=new ScaleInAnimationAdapter(animeAdaptar2);
+        scaleInAnimationAdapter2.setDuration(400);
+        scaleInAnimationAdapter2.setInterpolator(new OvershootInterpolator(1f));
+        scaleInAnimationAdapter2.setFirstOnly(false);
+        recyclerView2.setAdapter(scaleInAnimationAdapter2);
 
-        apiInterface = APIClient.getClient().create(APIInterface.class);
+        apiInterface = APIClient.getClient(view.getContext()).create(APIInterface.class);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,13 +154,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-        getRandomAnime(view);
+        getRandomAnime();
         getPopularAnime();
         getTrendingAnime();
     }
 
-    public void getRandomAnime(View view){
+    public void getRandomAnime(){
         Call<AnimeInfo> call = apiInterface.randomAnime();
         call.enqueue(new Callback<AnimeInfo>() {
             @Override
@@ -159,8 +173,10 @@ public class HomeFragment extends Fragment {
 
                     textView.setText(title);
                     textView3.setText(title);
-                    textView2.setText(Html.fromHtml(anime.desc, Html.FROM_HTML_MODE_COMPACT));
-                    textView4.setText(Html.fromHtml(anime.desc, Html.FROM_HTML_MODE_COMPACT));
+                    if(anime.desc!=null) {
+                        textView2.setText(Html.fromHtml(anime.desc, Html.FROM_HTML_MODE_COMPACT));
+                        textView4.setText(Html.fromHtml(anime.desc, Html.FROM_HTML_MODE_COMPACT));
+                    }
 
                     Picasso.get().load(anime.image)
                             .placeholder(R.drawable.ic_baseline_broken_image_24)
@@ -169,7 +185,7 @@ public class HomeFragment extends Fragment {
                     randomAnimeId = anime.id;
                 }
                 else {
-                    getRandomAnime(view);
+                    getRandomAnime();
                 }
             }
 
