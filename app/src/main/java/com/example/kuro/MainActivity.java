@@ -3,16 +3,15 @@ package com.example.kuro;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.kuro.adaptars.ViewPagerAdaptar;
+import com.example.kuro.adaptars.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager2 viewPager2;
-    ViewPagerAdaptar viewPagerAdaptar;
+    ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout=findViewById(R.id.tabLayout);
         viewPager2=findViewById(R.id.viewPager);
-        viewPagerAdaptar=new ViewPagerAdaptar(this);
-        viewPager2.setAdapter(viewPagerAdaptar);
+        viewPagerAdapter=new ViewPagerAdapter(this);
+        viewPager2.setAdapter(viewPagerAdapter);
         viewPager2.setUserInputEnabled(false);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

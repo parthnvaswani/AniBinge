@@ -4,11 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
 import com.example.kuro.pojo.AnimeInfo;
-import com.example.kuro.pojo.Animes;
 
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -6,28 +6,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.kuro.pojo.AnimeInfo;
 import com.example.kuro.pojo.EpisodeLinks;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,50 +64,41 @@ public class AnimePlayer extends AppCompatActivity {
         String title;
 
         if (eps == 0) title = join(arr, 0, size - 2, " ");
-        else if(episode.title==null) title = arr.stream().collect(Collectors.joining(" "));
+        else if(episode.title==null) title = String.join(" ",arr);
         else title=episode.title;
         epTitle.setText(title);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), AnimePlayer.class);
-                intent.putExtra("pos", pos+1+"");
-                startActivity(intent);
-                finish();
-            }
+        next.setOnClickListener(view -> {
+            Intent intent1 = new Intent(view.getContext(), AnimePlayer.class);
+            intent1.putExtra("pos", pos+1+"");
+            startActivity(intent1);
+            finish();
         });
 
-        prev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), AnimePlayer.class);
-                intent.putExtra("pos", pos-1+"");
-                startActivity(intent);
-                finish();
-                overridePendingTransition(R.anim.exit_to_right, R.anim.enter_from_left);
-            }
+        prev.setOnClickListener(view -> {
+            Intent intent12 = new Intent(view.getContext(), AnimePlayer.class);
+            intent12.putExtra("pos", pos-1+"");
+            startActivity(intent12);
+            finish();
+            overridePendingTransition(R.anim.exit_to_right, R.anim.enter_from_left);
         });
 
-        dubButt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String link="";
-                if(isSub==true) {
-                    dubButt.setText("Dub");
-                    link=dub;
-                }else{
-                    dubButt.setText("Sub");
-                    link=sub;
-                }
-                long ms=player.getCurrentPosition();
-                player.release();
-                play(link);
-                player.seekTo(ms);
-                isSub=!isSub;
+        dubButt.setOnClickListener(view -> {
+            String link;
+            if(isSub) {
+                dubButt.setText("Dub");
+                link=dub;
+            }else{
+                dubButt.setText("Sub");
+                link=sub;
             }
+            long ms=player.getCurrentPosition();
+            player.release();
+            play(link);
+            player.seekTo(ms);
+            isSub=!isSub;
         });
 
         if(pos>=eps) next.setVisibility(View.GONE);
@@ -129,16 +114,7 @@ public class AnimePlayer extends AppCompatActivity {
     }
 
     public String join(List<String> a,int f,int l,String d){
-        return a.subList(f,l).stream().collect(Collectors.joining(d));
-    }
-
-    public static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch(Exception e) {
-            return false;
-        }
-        return true;
+        return String.join(d,a.subList(f,l));
     }
 
     public void getEpisodeLink(String id,String subOrDub){
@@ -147,7 +123,7 @@ public class AnimePlayer extends AppCompatActivity {
             @Override
             public void onResponse(Call<EpisodeLinks> call, Response<EpisodeLinks> response) {
                 EpisodeLinks episodeLinks = response.body();
-                if(subOrDub=="sub") {
+                if(subOrDub.equals("sub")) {
                     sub=episodeLinks.sources.get(0).url;
                     play(sub);
                 }
@@ -192,15 +168,12 @@ public class AnimePlayer extends AppCompatActivity {
                     if(next.getVisibility()==View.VISIBLE)
                         next.callOnClick();
                 }
+                playerView.setKeepScreenOn(state != Player.STATE_IDLE && state != Player.STATE_ENDED);
             }
 
             @Override
-            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED || !playWhenReady) {
-                    playerView.setKeepScreenOn(false);
-                } else {
-                    playerView.setKeepScreenOn(true);
-                }
+            public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
+                playerView.setKeepScreenOn(playWhenReady);
             }
         });
     }

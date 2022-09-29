@@ -8,8 +8,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.example.kuro.fragments.HomeFragment;
 import com.example.kuro.fragments.SearchFragment;
 
-public class ViewPagerAdaptar extends FragmentStateAdapter {
-    public ViewPagerAdaptar(@NonNull FragmentActivity fragmentActivity) {
+public class ViewPagerAdapter extends FragmentStateAdapter {
+    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 

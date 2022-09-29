@@ -18,10 +18,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class AnimeAdaptar extends RecyclerView.Adapter<AnimeAdaptar.ViewHolder> {
+public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> {
     List<Anime> animes;
 
-    public AnimeAdaptar(List<Anime> animes) {
+    public AnimeAdapter(List<Anime> animes) {
         this.animes = animes;
     }
 
@@ -46,13 +46,10 @@ public class AnimeAdaptar extends RecyclerView.Adapter<AnimeAdaptar.ViewHolder> 
                 .error(R.drawable.ic_baseline_broken_image_24)
                 .into(holder.imageView);
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), AnimePage.class);
-                intent.putExtra("id", anime.id);
-                view.getContext().startActivity(intent);
-            }
+        holder.cardView.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), AnimePage.class);
+            intent.putExtra("id", anime.id);
+            view.getContext().startActivity(intent);
         });
     }
 

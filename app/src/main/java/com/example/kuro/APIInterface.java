@@ -1,6 +1,5 @@
 package com.example.kuro;
 
-import com.example.kuro.pojo.Anime;
 import com.example.kuro.pojo.AnimeInfo;
 import com.example.kuro.pojo.Animes;
 import com.example.kuro.pojo.EpisodeLinks;

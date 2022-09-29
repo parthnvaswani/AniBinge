@@ -6,10 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +17,14 @@ import android.widget.SearchView;
 import com.example.kuro.APIClient;
 import com.example.kuro.APIInterface;
 import com.example.kuro.R;
-import com.example.kuro.adaptars.AnimeAdaptar;
+import com.example.kuro.adaptars.AnimeAdapter;
 import com.example.kuro.pojo.Anime;
 import com.example.kuro.pojo.Animes;
-import com.google.android.material.textfield.TextInputLayout;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
-import jp.wasabeef.recyclerview.animators.LandingAnimator;
-import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,7 +33,7 @@ public class SearchFragment extends Fragment {
     APIInterface apiInterface;
     RecyclerView recyclerView;
     SearchView searchView;
-    AnimeAdaptar animeAdaptar;
+    AnimeAdapter animeAdapter;
     List<Anime> animes;
     String query="";
     int page=1;
@@ -60,8 +53,8 @@ public class SearchFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
-        animeAdaptar = new AnimeAdaptar(animes);
-        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(animeAdaptar);
+        animeAdapter = new AnimeAdapter(animes);
+        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(animeAdapter);
         scaleInAnimationAdapter.setDuration(400);
         scaleInAnimationAdapter.setInterpolator(new OvershootInterpolator(1f));
         scaleInAnimationAdapter.setFirstOnly(false);
@@ -109,7 +102,7 @@ public class SearchFragment extends Fragment {
                 hasNextPage=resource.hasNextPage;
                 if(clearAll)animes.clear();
                 animes.addAll(resource.results);
-                animeAdaptar.notifyDataSetChanged();
+                animeAdapter.notifyDataSetChanged();
             }
 
             @Override
