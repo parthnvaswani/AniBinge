@@ -61,38 +61,26 @@ public class AnimePlayer extends AppCompatActivity {
         dubButt=playerView.findViewById(R.id.dub);
 
         Intent intent = getIntent();
-        String id = intent.getStringExtra("id");
-        int eps =Integer.parseInt(intent.getStringExtra("eps"));
-        String fep =intent.getStringExtra("fep");
+        int pos = Integer.parseInt(intent.getStringExtra("pos"));
+        AnimeInfo.Episode episode=animeInfo.episodes.get(pos);
+        String id=episode.id;
+        int eps =animeInfo.episodes.size()-1;
         List<String> arr= Arrays.asList(id.split("-"));
         int size=arr.size();
-        int ep=1;
-        if (isInteger(arr.get(size - 1)))
-            ep = Integer.parseInt(arr.get(size - 1));
-        else {
-            fep = "0";
-            ep = 0;
-        }
-        if(fep==null)fep="1";
         String title;
-        if(eps==1)title=join(arr,0,size-2," ");
-        else title=arr.stream().collect(Collectors.joining(" "));
+
+        if (eps == 0) title = join(arr, 0, size - 2, " ");
+        else if(episode.title==null) title = arr.stream().collect(Collectors.joining(" "));
+        else title=episode.title;
         epTitle.setText(title);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-        int finalEp = ep;
-        String finalFep = fep;
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AnimePlayer.class);
-                if(arr.get(size-2).equals("episode"))
-                    intent.putExtra("id", join(arr,0,size-1,"-")+"-"+(finalEp +1));
-                else
-                    intent.putExtra("id", join(arr,0,size,"-")+"-episode-"+(finalEp +1));
-                intent.putExtra("eps", eps+"");
-                intent.putExtra("fep", finalFep);
+                intent.putExtra("pos", pos+1+"");
                 startActivity(intent);
                 finish();
             }
@@ -102,12 +90,7 @@ public class AnimePlayer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AnimePlayer.class);
-                if(finalFep.equals("0")&&finalEp==1)
-                    intent.putExtra("id", join(arr,0,size-2,"-"));
-                else
-                    intent.putExtra("id", join(arr,0,size-1,"-")+"-"+(finalEp -1));
-                intent.putExtra("eps", eps+"");
-                intent.putExtra("fep", finalFep);
+                intent.putExtra("pos", pos-1+"");
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.exit_to_right, R.anim.enter_from_left);
@@ -117,30 +100,29 @@ public class AnimePlayer extends AppCompatActivity {
         dubButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String link="";
                 if(isSub==true) {
                     dubButt.setText("Dub");
-                    long ms=player.getCurrentPosition();
-                    player.release();
-                    play(dub);
-                    player.seekTo(ms);
+                    link=dub;
                 }else{
-                    player.release();
-                    long ms=player.getCurrentPosition();
                     dubButt.setText("Sub");
-                    play(sub);
-                    player.seekTo(ms);
+                    link=sub;
                 }
+                long ms=player.getCurrentPosition();
+                player.release();
+                play(link);
+                player.seekTo(ms);
                 isSub=!isSub;
             }
         });
 
-        if(ep>=eps||(fep.equals("0")&&ep>=eps-1)) next.setVisibility(View.GONE);
-        if((ep==0&&fep.equals("0"))||(ep==1&&!fep.equals("0"))) prev.setVisibility(View.GONE);
+        if(pos>=eps) next.setVisibility(View.GONE);
+        if(pos==0) prev.setVisibility(View.GONE);
 
         apiInterface = APIClient.getClient(this).create(APIInterface.class);
-        
+
         getEpisodeLink(id,"sub");
-        if(ep!=0)
+        if(arr.get(size-2).equals("episode"))
             getEpisodeLink(join(arr,0,size-2,"-")+"-dub-"+join(arr,size-2,size,"-"),"dub");
         else
             getEpisodeLink(join(arr,0,size,"-")+"-dub","dub");

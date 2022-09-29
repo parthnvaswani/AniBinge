@@ -39,7 +39,7 @@ public class AnimePage extends AppCompatActivity {
             public void onResponse(Call<AnimeInfo> call, Response<AnimeInfo> response) {
                 AnimeInfo resource = response.body();
                 globalState.setAnimeInfo(resource);
-                openPlayer(resource.episodes.get(0).id,resource.totalEpisodes);
+                openPlayer(0);
             }
 
             @Override
@@ -49,10 +49,9 @@ public class AnimePage extends AppCompatActivity {
         });
     }
 
-    public void openPlayer(String id,String eps){
+    public void openPlayer(int pos){
         Intent intent = new Intent(this, AnimePlayer.class);
-        intent.putExtra("id", id);
-        intent.putExtra("eps", eps);
+        intent.putExtra("pos", pos+"");
         startActivity(intent);
     }
 }
