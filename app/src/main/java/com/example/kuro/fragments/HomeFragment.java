@@ -1,5 +1,6 @@
 package com.example.kuro.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -7,7 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -162,6 +165,7 @@ public class HomeFragment extends Fragment {
         getRandomAnime();
         getPopularAnime();
         getTrendingAnime();
+        getContinueWatching(view.getContext());
     }
 
     public void getRandomAnime(){
@@ -243,21 +247,15 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    public void getContinueWatching(){
-        continueWatchingList.clear();
-        continueWatchingList.addAll(continueWatchingDao.getAll());
-        continueWatchingAdapter.notifyDataSetChanged();
-        if(continueWatchingList.size()!=0)
-            continueCards.setVisibility(View.VISIBLE);
-    }
-
-    public static void hideContinueWatching(){
-        continueCards.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onResume() {
-        getContinueWatching();
-        super.onResume();
+    public void getContinueWatching(Context ctx){
+        continueWatchingDao.getAll().observe((LifecycleOwner) ctx, continueWatchings -> {
+            continueWatchingList.clear();
+            continueWatchingList.addAll(continueWatchings);
+            continueWatchingAdapter.notifyDataSetChanged();
+            if(continueWatchingList.size()!=0)
+                continueCards.setVisibility(View.VISIBLE);
+            else
+                continueCards.setVisibility(View.GONE);
+        });
     }
 }

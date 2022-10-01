@@ -1,5 +1,6 @@
 package com.example.kuro.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -13,7 +14,7 @@ import java.util.List;
 @Dao
 public interface ContinueWatchingDao {
     @Query("select * from ContinueWatching")
-    List<ContinueWatching> getAll();
+    LiveData<List<ContinueWatching>> getAll();
 
     @Insert
     void add(ContinueWatching continueWatching);

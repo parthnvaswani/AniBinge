@@ -72,10 +72,7 @@ public class ContinueWatchingAdapter extends RecyclerView.Adapter<ContinueWatchi
         });
 
         holder.close.setOnClickListener(view -> {
-            animes.remove(position);
-            this.notifyDataSetChanged();
             continueWatchingDao.deleteByAnimeId(anime.getAnimeId());
-            if(animes.size()==0) HomeFragment.hideContinueWatching();
         });
 
         holder.cardView.setOnClickListener(view -> {
