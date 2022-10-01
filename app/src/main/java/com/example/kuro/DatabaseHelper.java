@@ -8,9 +8,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.kuro.dao.ContinueWatchingDao;
+import com.example.kuro.dao.EpisodePositionDao;
 import com.example.kuro.entities.ContinueWatching;
+import com.example.kuro.entities.EpisodePosition;
 
-@Database(entities = ContinueWatching.class,exportSchema = false,version = 1)
+@Database(entities = {ContinueWatching.class,EpisodePosition.class},exportSchema = false,version = 1)
 public abstract class DatabaseHelper extends RoomDatabase {
     private static final String DB_NAME="anibingedb";
     private static DatabaseHelper instance;
@@ -26,4 +28,6 @@ public abstract class DatabaseHelper extends RoomDatabase {
     }
 
     public abstract ContinueWatchingDao continueWatchingDao();
+
+    public abstract EpisodePositionDao episodePositionDao();
 }

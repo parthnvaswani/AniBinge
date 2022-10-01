@@ -11,7 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.kuro.dao.ContinueWatchingDao;
+import com.example.kuro.dao.EpisodePositionDao;
 import com.example.kuro.entities.ContinueWatching;
+import com.example.kuro.entities.EpisodePosition;
 import com.example.kuro.pojo.AnimeInfo;
 import com.example.kuro.pojo.EpisodeLinks;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -40,9 +42,11 @@ public class AnimePlayer extends AppCompatActivity {
     private boolean isSub=true;
     private GlobalState globalState;
     private ContinueWatchingDao continueWatchingDao;
+    private EpisodePositionDao episodePositionDao;
     private String id;
     private AnimeInfo animeInfo;
     private int pos;
+    private boolean isEpFinished=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,9 @@ public class AnimePlayer extends AppCompatActivity {
         globalState = ((GlobalState)getApplicationContext());
         animeInfo = globalState.getAnimeInfo();
 
-        continueWatchingDao=DatabaseHelper.getDB(this).continueWatchingDao();
+        DatabaseHelper databaseHelper=DatabaseHelper.getDB(this);
+        continueWatchingDao=databaseHelper.continueWatchingDao();
+        episodePositionDao=databaseHelper.episodePositionDao();
 
         epTitle=playerView.findViewById(R.id.epTitle);
         buffering=findViewById(R.id.buffering);
@@ -135,6 +141,7 @@ public class AnimePlayer extends AppCompatActivity {
                 if(subOrDub.equals("sub")) {
                     sub=episodeLinks.sources.get(0).url;
                     play(sub);
+                    player.seekTo(getEpPos());
                 }
                 else if(episodeLinks!=null){
                     dub=episodeLinks.sources.get(0).url;
@@ -171,6 +178,7 @@ public class AnimePlayer extends AppCompatActivity {
                 }
                 if(state==Player.STATE_ENDED)
                 {
+                    isEpFinished=true;
                     if(next.getVisibility()==View.VISIBLE)
                         next.callOnClick();
                 }
@@ -202,5 +210,23 @@ public class AnimePlayer extends AppCompatActivity {
             continueWatchingDao.add(new ContinueWatching(animeInfo.id,animeInfo.image,pos,position));
         else
             continueWatchingDao.update(animeInfo.id,pos,position);
+
+        if(position!=0){
+            if(isEpFinished)
+                episodePositionDao.deleteByEpId(id);
+            else {
+                if (episodePositionDao.getByEpId(id).size() == 0)
+                    episodePositionDao.add(new EpisodePosition(id, position));
+                else
+                    episodePositionDao.update(id, position);
+            }
+        }
+    }
+
+    protected long getEpPos(){
+        List<EpisodePosition> episodePositions= episodePositionDao.getByEpId(id);
+        if (episodePositions.size()!=0)
+            return episodePositions.get(0).getPosition();
+        return 0;
     }
 }
