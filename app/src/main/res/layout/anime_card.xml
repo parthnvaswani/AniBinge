@@ -34,7 +34,7 @@
                 android:foreground="?android:attr/selectableItemBackground"/>
 
             <TextView
-                android:id="@+id/animeTitle"
+                android:id="@+id/epNum"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

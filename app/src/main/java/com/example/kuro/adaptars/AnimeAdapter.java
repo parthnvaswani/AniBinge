@@ -65,7 +65,7 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView=itemView.findViewById(R.id.animeImage);
-            textView=itemView.findViewById(R.id.animeTitle);
+            textView=itemView.findViewById(R.id.epNum);
             cardView=itemView.findViewById(R.id.cardView);
         }
     }

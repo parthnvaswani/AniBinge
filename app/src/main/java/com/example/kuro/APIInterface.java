@@ -26,7 +26,7 @@ public interface APIInterface {
     Call<Animes> trendingAnime(@Query("page") int page);
 
     @GET("info/{id}")
-    Call<AnimeInfo> animeInfo(@Path("id") String id,@Query("dub") boolean subOrDub);
+    Call<AnimeInfo> animeInfo(@Path("id") String id);
 
     @GET("watch/{id}")
     Call<EpisodeLinks> getEpisodeLinks(@Path("id") String id);

@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.kuro.dao.ContinueWatchingDao;
+import com.example.kuro.entities.ContinueWatching;
 import com.example.kuro.pojo.AnimeInfo;
 import com.example.kuro.pojo.EpisodeLinks;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -37,17 +39,25 @@ public class AnimePlayer extends AppCompatActivity {
     private String sub="", dub="";
     private boolean isSub=true;
     private GlobalState globalState;
+    private ContinueWatchingDao continueWatchingDao;
+    private String id;
+    private AnimeInfo animeInfo;
+    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anime_player);
 
-        globalState=((GlobalState)getApplicationContext());
-        AnimeInfo animeInfo=globalState.getAnimeInfo();
-
-
         playerView=findViewById(R.id.playerView);
+        player = new ExoPlayer.Builder(this).build();
+        playerView.setPlayer(player);
+
+        globalState = ((GlobalState)getApplicationContext());
+        animeInfo = globalState.getAnimeInfo();
+
+        continueWatchingDao=DatabaseHelper.getDB(this).continueWatchingDao();
+
         epTitle=playerView.findViewById(R.id.epTitle);
         buffering=findViewById(R.id.buffering);
         next=playerView.findViewById(R.id.next);
@@ -55,9 +65,9 @@ public class AnimePlayer extends AppCompatActivity {
         dubButt=playerView.findViewById(R.id.dub);
 
         Intent intent = getIntent();
-        int pos = Integer.parseInt(intent.getStringExtra("pos"));
+        pos = Integer.parseInt(intent.getStringExtra("pos"));
         AnimeInfo.Episode episode=animeInfo.episodes.get(pos);
-        String id=episode.id;
+        id=episode.id;
         int eps =animeInfo.episodes.size()-1;
         List<String> arr= Arrays.asList(id.split("-"));
         int size=arr.size();
@@ -95,7 +105,6 @@ public class AnimePlayer extends AppCompatActivity {
                 link=sub;
             }
             long ms=player.getCurrentPosition();
-            player.release();
             play(link);
             player.seekTo(ms);
             isSub=!isSub;
@@ -141,9 +150,6 @@ public class AnimePlayer extends AppCompatActivity {
     }
 
     public void play(String link){
-        player = new ExoPlayer.Builder(this).build();
-        playerView.setPlayer(player);
-
         DataSource.Factory dataSourceFactory = new DefaultHttpDataSource.Factory().setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1");
         HlsMediaSource mediaSource = new HlsMediaSource.Factory(dataSourceFactory).
                 createMediaSource(MediaItem.fromUri(link));
@@ -186,9 +192,15 @@ public class AnimePlayer extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.e("hell", player.getCurrentPosition()+"");
-        // TODO: Save time to continue watching
+        update(player.getCurrentPosition());
         player.release();
         super.onDestroy();
+    }
+
+    protected void update(long position){
+        if(continueWatchingDao.getByAnimeId(animeInfo.id).size()==0)
+            continueWatchingDao.add(new ContinueWatching(animeInfo.id,animeInfo.image,pos,position));
+        else
+            continueWatchingDao.update(animeInfo.id,pos,position);
     }
 }

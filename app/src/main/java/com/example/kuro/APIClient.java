@@ -20,7 +20,7 @@ public class APIClient {
 
     public static Retrofit getClient(Context ctx) {
         File httpCacheDirectory = new File(ctx.getCacheDir(), "http-cache");
-        int cacheSize = 10 * 1024 * 1024;
+        int cacheSize = 30 * 1024 * 1024;
         Cache cache = new Cache(httpCacheDirectory, cacheSize);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(new CacheInterceptor())
@@ -41,7 +41,7 @@ public class APIClient {
             Response response = chain.proceed(chain.request());
 
             CacheControl cacheControl = new CacheControl.Builder()
-                    .maxAge(5, TimeUnit.MINUTES) // 5 minutes cache
+                    .maxAge(30, TimeUnit.MINUTES)
                     .build();
 
             return response.newBuilder()

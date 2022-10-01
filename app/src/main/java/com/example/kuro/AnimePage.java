@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.kuro.pojo.AnimeInfo;
 
@@ -14,6 +16,9 @@ import retrofit2.Response;
 public class AnimePage extends AppCompatActivity {
     private APIInterface apiInterface;
     private GlobalState globalState;
+    private TextView textView;
+    private AnimeInfo animeInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,19 +29,25 @@ public class AnimePage extends AppCompatActivity {
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
 
+        textView=findViewById(R.id.animeId);
         apiInterface = APIClient.getClient(this).create(APIInterface.class);
+
+        textView.setOnClickListener(view -> {
+            if(animeInfo!=null)
+                openPlayer(0);
+        });
 
         loadAnimeInfo(id,false);
     }
 
     public void loadAnimeInfo(String id,boolean isDub){
-        Call<AnimeInfo> call = apiInterface.animeInfo(id,isDub);
+        Call<AnimeInfo> call = apiInterface.animeInfo(id);
         call.enqueue(new Callback<AnimeInfo>() {
             @Override
             public void onResponse(Call<AnimeInfo> call, Response<AnimeInfo> response) {
                 AnimeInfo resource = response.body();
                 globalState.setAnimeInfo(resource);
-                openPlayer(0);
+                animeInfo=resource;
             }
 
             @Override

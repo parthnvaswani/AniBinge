@@ -7,10 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +24,12 @@ import android.widget.TextView;
 import com.example.kuro.APIClient;
 import com.example.kuro.APIInterface;
 import com.example.kuro.AnimePage;
+import com.example.kuro.DatabaseHelper;
 import com.example.kuro.R;
 import com.example.kuro.adaptars.AnimeAdapter;
+import com.example.kuro.adaptars.ContinueWatchingAdapter;
+import com.example.kuro.dao.ContinueWatchingDao;
+import com.example.kuro.entities.ContinueWatching;
 import com.example.kuro.pojo.Anime;
 import com.example.kuro.pojo.AnimeInfo;
 import com.example.kuro.pojo.Animes;
@@ -41,16 +47,17 @@ public class HomeFragment extends Fragment {
     private TextView textView,textView2,textView3,textView4;
     private ImageView imageView;
     private APIInterface apiInterface;
-    private RecyclerView recyclerView1;
-    private RecyclerView recyclerView2;
-    private AnimeAdapter AnimeAdapter1;
-    private AnimeAdapter AnimeAdapter2;
-    private List<Anime> popularAnimes;
-    private List<Anime> trendingAnimes;
+    private RecyclerView recyclerView1,recyclerView2,continueWatching;
+    private AnimeAdapter AnimeAdapter1,AnimeAdapter2;
+    private ContinueWatchingAdapter continueWatchingAdapter;
+    private List<Anime> popularAnimes, trendingAnimes;
+    private List<ContinueWatching> continueWatchingList;
     private ProgressBar progressBar;
     private ProgressBar progressBar2;
     private CardView synopsis;
+    private static CardView continueCards;
     private String randomAnimeId="";
+    private ContinueWatchingDao continueWatchingDao;
 
     int page1=1,page2=1;
     boolean hasNextPage1=true,hasNextPage2=true;
@@ -72,18 +79,32 @@ public class HomeFragment extends Fragment {
         progressBar=view.findViewById(R.id.progressBar);
         progressBar2=view.findViewById(R.id.progressBar2);
         synopsis=view.findViewById(R.id.synopsis);
+        continueCards=view.findViewById(R.id.continueCards);
 
         popularAnimes = new ArrayList<>();
-        trendingAnimes=new ArrayList<>();
+        trendingAnimes =new ArrayList<>();
+        continueWatchingList = new ArrayList<>();
+
+        continueWatching = view.findViewById(R.id.continueWatching);
+        continueWatching.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
+        continueWatchingAdapter = new ContinueWatchingAdapter(continueWatchingList,view.getContext());
+        ScaleInAnimationAdapter scaleInAnimationAdapter = new ScaleInAnimationAdapter(continueWatchingAdapter);
+        scaleInAnimationAdapter.setDuration(400);
+        scaleInAnimationAdapter.setInterpolator(new OvershootInterpolator(1f));
+        scaleInAnimationAdapter.setFirstOnly(false);
+        continueWatching.setAdapter(scaleInAnimationAdapter);
+        continueWatchingAdapter.getItemCount();
+
+        continueWatchingDao = DatabaseHelper.getDB(view.getContext()).continueWatchingDao();
 
         recyclerView1 = view.findViewById(R.id.popularAnimes);
         recyclerView1.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
         AnimeAdapter1 = new AnimeAdapter(popularAnimes);
-        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(AnimeAdapter1);
-        scaleInAnimationAdapter.setDuration(400);
-        scaleInAnimationAdapter.setInterpolator(new OvershootInterpolator(1f));
-        scaleInAnimationAdapter.setFirstOnly(false);
-        recyclerView1.setAdapter(scaleInAnimationAdapter);
+        ScaleInAnimationAdapter scaleInAnimationAdapter1 = new ScaleInAnimationAdapter(AnimeAdapter1);
+        scaleInAnimationAdapter1.setDuration(400);
+        scaleInAnimationAdapter1.setInterpolator(new OvershootInterpolator(1f));
+        scaleInAnimationAdapter1.setFirstOnly(false);
+        recyclerView1.setAdapter(scaleInAnimationAdapter1);
 
         recyclerView2 = view.findViewById(R.id.trendingAnimes);
         recyclerView2.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
@@ -187,8 +208,9 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<Animes> call, Response<Animes> response) {
                 Animes resource = response.body();
                 hasNextPage1=resource.hasNextPage;
+                int size=popularAnimes.size();
                 popularAnimes.addAll(resource.results);
-                AnimeAdapter1.notifyDataSetChanged();
+                AnimeAdapter1.notifyItemRangeInserted(size,popularAnimes.size()-size);
                 progressBar.setVisibility(View.GONE);
                 recyclerView1.setVisibility(View.VISIBLE);
             }
@@ -207,8 +229,9 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<Animes> call, Response<Animes> response) {
                 Animes resource = response.body();
                 hasNextPage2=resource.hasNextPage;
+                int size=trendingAnimes.size();
                 trendingAnimes.addAll(resource.results);
-                AnimeAdapter2.notifyDataSetChanged();
+                AnimeAdapter2.notifyItemRangeInserted(size,trendingAnimes.size()-size);
                 progressBar2.setVisibility(View.GONE);
                 recyclerView2.setVisibility(View.VISIBLE);
             }
@@ -218,5 +241,23 @@ public class HomeFragment extends Fragment {
                 call.cancel();
             }
         });
+    }
+
+    public void getContinueWatching(){
+        continueWatchingList.clear();
+        continueWatchingList.addAll(continueWatchingDao.getAll());
+        continueWatchingAdapter.notifyDataSetChanged();
+        if(continueWatchingList.size()!=0)
+            continueCards.setVisibility(View.VISIBLE);
+    }
+
+    public static void hideContinueWatching(){
+        continueCards.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResume() {
+        getContinueWatching();
+        super.onResume();
     }
 }

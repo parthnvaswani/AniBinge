@@ -100,9 +100,15 @@ public class SearchFragment extends Fragment {
             public void onResponse(Call<Animes> call, Response<Animes> response) {
                 Animes resource = response.body();
                 hasNextPage=resource.hasNextPage;
-                if(clearAll)animes.clear();
+                if(clearAll){
+                    animes.clear();
+                    animes.addAll(resource.results);
+                    animeAdapter.notifyDataSetChanged();
+                    return;
+                }
+                int size=animes.size();
                 animes.addAll(resource.results);
-                animeAdapter.notifyDataSetChanged();
+                animeAdapter.notifyItemRangeInserted(size,animes.size()-size);
             }
 
             @Override
