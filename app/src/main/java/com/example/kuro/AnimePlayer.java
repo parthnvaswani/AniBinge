@@ -79,7 +79,7 @@ public class AnimePlayer extends AppCompatActivity {
         int size=arr.size();
         String title;
 
-        if (eps == 0) title = join(arr, 0, size - 2, " ");
+        if (eps == 0 && animeInfo.status.equals("Completed")) title = join(arr, 0, size - 2, " ");
         else if(episode.title==null) title = String.join(" ",arr);
         else title=episode.title;
         epTitle.setText(title);
