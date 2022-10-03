@@ -209,7 +209,7 @@ public class AnimePlayer extends AppCompatActivity {
         if(continueWatchingDao.getByAnimeId(animeInfo.id).size()==0)
             continueWatchingDao.add(new ContinueWatching(animeInfo.id,animeInfo.image,pos,position));
         else
-            continueWatchingDao.update(animeInfo.id,pos,position);
+            continueWatchingDao.update(animeInfo.id,pos,position,System.currentTimeMillis());
 
         if(position!=0){
             if(isEpFinished)

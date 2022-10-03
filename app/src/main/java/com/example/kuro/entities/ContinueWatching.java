@@ -6,6 +6,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+
 @Entity(tableName = "ContinueWatching")
 public class ContinueWatching {
     @PrimaryKey
@@ -18,8 +19,10 @@ public class ContinueWatching {
     private int epNum;
     @ColumnInfo(name = "position")
     private long position;
+    @ColumnInfo(name = "updatedAt")
+    private long updatedAt = System.currentTimeMillis();
 
-    public ContinueWatching(String animeId, String img, int epNum, long position) {
+    public ContinueWatching(@NonNull String animeId, String img, int epNum, long position) {
         this.animeId = animeId;
         this.img = img;
         this.epNum = epNum;
@@ -57,5 +60,13 @@ public class ContinueWatching {
 
     public void setPosition(long position) {
         this.position = position;
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
