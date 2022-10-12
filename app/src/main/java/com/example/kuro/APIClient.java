@@ -16,8 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-    private static Retrofit retrofit = null;
-
     public static Retrofit getClient(Context ctx) {
         File httpCacheDirectory = new File(ctx.getCacheDir(), "http-cache");
         int cacheSize = 30 * 1024 * 1024;
@@ -26,13 +24,12 @@ public class APIClient {
                 .addNetworkInterceptor(new CacheInterceptor())
                 .cache(cache)
                 .build();
-        retrofit = new Retrofit.Builder()
-                .baseUrl("https://consumet-api.herokuapp.com/meta/anilist/")
+
+        return new Retrofit.Builder()
+                .baseUrl("https://ani-binge.herokuapp.com/meta/anilist/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
-
-        return retrofit;
     }
 
     public static class CacheInterceptor implements Interceptor {
