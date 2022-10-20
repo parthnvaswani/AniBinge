@@ -2,6 +2,7 @@ package com.example.kuro;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.kuro.fragments.AnimePageStart;
 import com.example.kuro.pojo.AnimeInfo;
 import com.squareup.picasso.Picasso;
 
@@ -26,7 +28,7 @@ public class AnimePage extends AppCompatActivity {
     private TextView title,status,episodes,year,duration,description,rating,synTitle,synDescription;
     private RatingBar ratingBar;
     private ImageView imageView;
-    private CardView synopsis;
+    private CardView synopsis,progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class AnimePage extends AppCompatActivity {
         ratingBar=findViewById(R.id.ratingBar);
         imageView=findViewById(R.id.animImg);
         synopsis=findViewById(R.id.synopsis);
+        progress=findViewById(R.id.aniProg);
 
         description.setOnClickListener(view12 -> {
             if(animeInfo!=null)
@@ -71,6 +74,7 @@ public class AnimePage extends AppCompatActivity {
                 AnimeInfo resource = response.body();
                 globalState.setAnimeInfo(resource);
                 animeInfo=resource;
+                progress.setVisibility(View.GONE);
                 setInfo();
             }
 
@@ -111,6 +115,11 @@ public class AnimePage extends AppCompatActivity {
             rating.setVisibility(View.GONE);
             ratingBar.setVisibility(View.GONE);
         }
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.start_panel,new AnimePageStart());
+        ft.replace(R.id.end_panel,new AnimePageEnd());
+        ft.commit();
     }
 
     public String getString(String s,String d){
