@@ -1,13 +1,19 @@
 package com.example.kuro;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.kuro.pojo.AnimeInfo;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,8 +22,11 @@ import retrofit2.Response;
 public class AnimePage extends AppCompatActivity {
     private APIInterface apiInterface;
     private GlobalState globalState;
-    private TextView textView;
     private AnimeInfo animeInfo;
+    private TextView title,status,episodes,year,duration,description,rating,synTitle,synDescription;
+    private RatingBar ratingBar;
+    private ImageView imageView;
+    private CardView synopsis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +38,27 @@ public class AnimePage extends AppCompatActivity {
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
 
-        textView=findViewById(R.id.animeId);
-        apiInterface = APIClient.getClient(this).create(APIInterface.class);
+        title=findViewById(R.id.aniTitle);
+        synTitle=findViewById(R.id.aniSynTitle);
+        status=findViewById(R.id.aniStatus);
+        episodes=findViewById(R.id.aniEp);
+        year=findViewById(R.id.aniYear);
+        duration=findViewById(R.id.aniDur);
+        description=findViewById(R.id.aniDesc);
+        synDescription=findViewById(R.id.aniSynDesc);
+        rating=findViewById(R.id.aniRate);
+        ratingBar=findViewById(R.id.ratingBar);
+        imageView=findViewById(R.id.animImg);
+        synopsis=findViewById(R.id.synopsis);
 
-        textView.setOnClickListener(view -> {
+        description.setOnClickListener(view12 -> {
             if(animeInfo!=null)
-                openPlayer(0);
+                synopsis.setVisibility(View.VISIBLE);
         });
+
+        synopsis.setOnClickListener(view13 -> synopsis.setVisibility(View.GONE));
+
+        apiInterface = APIClient.getClient(this).create(APIInterface.class);
 
         loadAnimeInfo(id,false);
     }
@@ -48,6 +71,7 @@ public class AnimePage extends AppCompatActivity {
                 AnimeInfo resource = response.body();
                 globalState.setAnimeInfo(resource);
                 animeInfo=resource;
+                setInfo();
             }
 
             @Override
@@ -55,6 +79,42 @@ public class AnimePage extends AppCompatActivity {
                 call.cancel();
             }
         });
+    }
+
+    public void setInfo(){
+        String titl="No Title";
+        if (animeInfo.title.romaji != null) titl = animeInfo.title.romaji;
+        else if (animeInfo.title.english != null) titl = animeInfo.title.english;
+        else if (animeInfo.title.nati != null) titl = animeInfo.title.nati;
+
+        title.setText(titl);
+        synTitle.setText(titl);
+
+        description.setText(Html.fromHtml(getString(animeInfo.desc,"description"), Html.FROM_HTML_MODE_COMPACT));
+        synDescription.setText(Html.fromHtml(getString(animeInfo.desc,"description"), Html.FROM_HTML_MODE_COMPACT));
+
+        Picasso.get().load(animeInfo.image)
+                .placeholder(R.drawable.ic_baseline_broken_image_24)
+                .error(R.drawable.ic_baseline_broken_image_24)
+                .into(imageView);
+
+        status.setText("Status: "+animeInfo.status);
+        year.setText("Year: "+animeInfo.year);
+        episodes.setText("Episodes: "+getString(animeInfo.totalEpisodes,"0"));
+        duration.setText("Duration: "+getString(animeInfo.duration.toString(),"0"));
+        if(animeInfo.rating!=null) {
+            float rate = animeInfo.rating / 10.0f;
+            rating.setText(rate + "");
+            ratingBar.setRating(rate / 2);
+        }
+        else {
+            rating.setVisibility(View.GONE);
+            ratingBar.setVisibility(View.GONE);
+        }
+    }
+
+    public String getString(String s,String d){
+        return s!=null?s:d;
     }
 
     public void openPlayer(int pos){

@@ -9,13 +9,10 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,8 +73,8 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         textView=view.findViewById(R.id.animeId);
         textView2=view.findViewById(R.id.textView2);
-        textView3=view.findViewById(R.id.textView);
-        textView4=view.findViewById(R.id.textView5);
+        textView3=view.findViewById(R.id.aniSynTitle);
+        textView4=view.findViewById(R.id.aniSynDesc);
         imageView=view.findViewById(R.id.imageView);
         progressBar=view.findViewById(R.id.progressBar);
         progressBar2=view.findViewById(R.id.progressBar2);

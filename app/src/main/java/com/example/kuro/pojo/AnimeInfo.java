@@ -22,20 +22,25 @@ public class AnimeInfo {
     @SerializedName("totalEpisodes")
     public String totalEpisodes;
     @SerializedName("rating")
-    public Integer rating;
+    public Float rating;
     @SerializedName("duration")
     public Integer duration;
-    @SerializedName("genres")
-    public String[] genres;
     @SerializedName("recommendations")
     public List<Anime> recommendations;
     @SerializedName("episodes")
     public List<Episode> episodes;
-
-    public static class Title{
-        @SerializedName("romaji")
-        public String romaji;
-    }
+    @SerializedName("countryOfOrigin")
+    public String country;
+    @SerializedName("popularity")
+    public int popularity;
+    @SerializedName("genres")
+    public String[] genres;
+    @SerializedName("season")
+    public String season;
+    @SerializedName("studios")
+    public String[] studios;
+    @SerializedName("type")
+    public String type;
 
     public static class Trailer{
         @SerializedName("id")
