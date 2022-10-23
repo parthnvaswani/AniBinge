@@ -2,20 +2,27 @@ package com.example.kuro;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.kuro.adaptars.EpisodeExpandAdapter;
+import com.example.kuro.fragments.AnimePageEnd;
 import com.example.kuro.fragments.AnimePageStart;
 import com.example.kuro.pojo.AnimeInfo;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +36,9 @@ public class AnimePage extends AppCompatActivity {
     private RatingBar ratingBar;
     private ImageView imageView;
     private CardView synopsis,progress;
+    private RecyclerView recyclerView;
+    private EpisodeExpandAdapter episodeExpandAdapter;
+    private List<String> epiRange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,12 @@ public class AnimePage extends AppCompatActivity {
         synopsis=findViewById(R.id.synopsis);
         progress=findViewById(R.id.aniProg);
 
+        epiRange=new ArrayList<>();
+        recyclerView=findViewById(R.id.aniEps);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        episodeExpandAdapter = new EpisodeExpandAdapter(epiRange);
+        recyclerView.setAdapter(episodeExpandAdapter);
+
         description.setOnClickListener(view12 -> {
             if(animeInfo!=null)
                 synopsis.setVisibility(View.VISIBLE);
@@ -63,10 +79,10 @@ public class AnimePage extends AppCompatActivity {
 
         apiInterface = APIClient.getClient(this).create(APIInterface.class);
 
-        loadAnimeInfo(id,false);
+        loadAnimeInfo(id);
     }
 
-    public void loadAnimeInfo(String id,boolean isDub){
+    public void loadAnimeInfo(String id){
         Call<AnimeInfo> call = apiInterface.animeInfo(id);
         call.enqueue(new Callback<AnimeInfo>() {
             @Override
@@ -75,7 +91,12 @@ public class AnimePage extends AppCompatActivity {
                 globalState.setAnimeInfo(resource);
                 animeInfo=resource;
                 progress.setVisibility(View.GONE);
-                setInfo();
+                if(animeInfo==null) {
+                    finish();
+                    Toast.makeText(AnimePage.this, "Anime info not found!!!", Toast.LENGTH_SHORT).show();
+                }
+                else
+                    setInfo();
             }
 
             @Override
@@ -105,7 +126,7 @@ public class AnimePage extends AppCompatActivity {
         status.setText("Status: "+animeInfo.status);
         year.setText("Year: "+animeInfo.year);
         episodes.setText("Episodes: "+getString(animeInfo.totalEpisodes,"0"));
-        duration.setText("Duration: "+getString(animeInfo.duration.toString(),"0"));
+        duration.setText("Duration: "+getString(animeInfo.duration,"0"));
         if(animeInfo.rating!=null) {
             float rate = animeInfo.rating / 10.0f;
             rating.setText(rate + "");
@@ -116,19 +137,23 @@ public class AnimePage extends AppCompatActivity {
             ratingBar.setVisibility(View.GONE);
         }
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.start_panel,new AnimePageStart());
-        ft.replace(R.id.end_panel,new AnimePageEnd());
-        ft.commit();
+        int size=animeInfo.episodes.size(),pages,extra,pageSize=20;
+        if(size!=0) {
+            pages= (int) Math.floor(size/pageSize);
+            extra= size%pageSize;
+            for (int i = 0; i < pages; i++) {
+                int start=pageSize*i;
+                epiRange.add(start+1+"-"+(start+pageSize));
+            }
+            epiRange.add(pageSize*pages+1+"-"+(pageSize*pages+extra));
+        }
+
+        FragmentManager fm = getSupportFragmentManager();
+        if (!fm.isDestroyed())
+            fm.beginTransaction().replace(R.id.start_panel, new AnimePageStart()).replace(R.id.end_panel, new AnimePageEnd()).commit();
     }
 
     public String getString(String s,String d){
         return s!=null?s:d;
-    }
-
-    public void openPlayer(int pos){
-        Intent intent = new Intent(this, AnimePlayer.class);
-        intent.putExtra("pos", pos+"");
-        startActivity(intent);
     }
 }

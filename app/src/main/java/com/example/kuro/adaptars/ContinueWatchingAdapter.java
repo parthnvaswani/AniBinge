@@ -2,13 +2,11 @@ package com.example.kuro.adaptars;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -23,8 +21,6 @@ import com.example.kuro.GlobalState;
 import com.example.kuro.R;
 import com.example.kuro.dao.ContinueWatchingDao;
 import com.example.kuro.entities.ContinueWatching;
-import com.example.kuro.fragments.HomeFragment;
-import com.example.kuro.pojo.Anime;
 import com.example.kuro.pojo.AnimeInfo;
 import com.squareup.picasso.Picasso;
 
@@ -71,13 +67,9 @@ public class ContinueWatchingAdapter extends RecyclerView.Adapter<ContinueWatchi
             view.getContext().startActivity(intent);
         });
 
-        holder.close.setOnClickListener(view -> {
-            continueWatchingDao.deleteByAnimeId(anime.getAnimeId());
-        });
+        holder.close.setOnClickListener(view -> continueWatchingDao.deleteByAnimeId(anime.getAnimeId()));
 
-        holder.cardView.setOnClickListener(view -> {
-            loadAnimeInfoAndPlay(anime.getAnimeId(),anime.getEpNum());
-        });
+        holder.cardView.setOnClickListener(view -> loadAnimeInfoAndPlay(anime.getAnimeId(),anime.getEpNum()));
     }
 
     public void loadAnimeInfoAndPlay(String id,int pos){

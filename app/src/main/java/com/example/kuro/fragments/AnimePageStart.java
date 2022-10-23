@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.example.kuro.GlobalState;
 import com.example.kuro.R;
 import com.example.kuro.pojo.AnimeInfo;
-import com.google.gson.annotations.SerializedName;
 import com.squareup.picasso.Picasso;
 
 public class AnimePageStart extends Fragment {
@@ -46,7 +45,7 @@ public class AnimePageStart extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        animeInfo = ((GlobalState)getActivity().getApplicationContext()).getAnimeInfo();
+        animeInfo = ((GlobalState)view.getContext().getApplicationContext()).getAnimeInfo();
 
         country=view.findViewById(R.id.aniCountry);
         popularity=view.findViewById(R.id.aniPop);

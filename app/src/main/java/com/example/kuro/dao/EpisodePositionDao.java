@@ -4,8 +4,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-
-import com.example.kuro.entities.ContinueWatching;
 import com.example.kuro.entities.EpisodePosition;
 
 import java.util.List;

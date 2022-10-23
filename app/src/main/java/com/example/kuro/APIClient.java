@@ -26,7 +26,8 @@ public class APIClient {
                 .build();
 
         return new Retrofit.Builder()
-                .baseUrl("https://ani-binge.herokuapp.com/meta/anilist/")
+//                .baseUrl("https://ani-binge.herokuapp.com/meta/anilist/")
+                .baseUrl("https://api.consumet.org/meta/anilist/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();

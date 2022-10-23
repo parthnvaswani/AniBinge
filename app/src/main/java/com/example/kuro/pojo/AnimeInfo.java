@@ -24,7 +24,7 @@ public class AnimeInfo {
     @SerializedName("rating")
     public Float rating;
     @SerializedName("duration")
-    public Integer duration;
+    public String duration;
     @SerializedName("recommendations")
     public List<Anime> recommendations;
     @SerializedName("episodes")
@@ -58,5 +58,7 @@ public class AnimeInfo {
         public String image;
         @SerializedName("description")
         public String desc;
+        @SerializedName("number")
+        public int num;
     }
 }

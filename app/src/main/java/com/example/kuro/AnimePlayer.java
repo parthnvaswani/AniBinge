@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -81,7 +80,7 @@ public class AnimePlayer extends AppCompatActivity {
 
         if (eps == 0 && animeInfo.status.equals("Completed")) title = join(arr, 0, size - 2, " ");
         else if(episode.title==null) title = String.join(" ",arr);
-        else title=episode.title;
+        else title="Episode "+episode.num+"\n"+episode.title;
         epTitle.setText(title);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
