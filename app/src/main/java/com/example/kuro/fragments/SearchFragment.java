@@ -35,13 +35,12 @@ public class SearchFragment extends Fragment {
     SearchView searchView;
     AnimeAdapter animeAdapter;
     List<Anime> animes;
-    String query="";
-    int page=1;
-    boolean hasNextPage=true;
+    String query = "";
+    int page = 1;
+    boolean hasNextPage = true;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
@@ -54,22 +53,22 @@ public class SearchFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
         animeAdapter = new AnimeAdapter(animes);
-        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(animeAdapter);
+        ScaleInAnimationAdapter scaleInAnimationAdapter = new ScaleInAnimationAdapter(animeAdapter);
         scaleInAnimationAdapter.setDuration(400);
         scaleInAnimationAdapter.setInterpolator(new OvershootInterpolator(1f));
         scaleInAnimationAdapter.setFirstOnly(false);
         recyclerView.setAdapter(scaleInAnimationAdapter);
 
-        searchView=view.findViewById(R.id.searchView);
+        searchView = view.findViewById(R.id.searchView);
 
         apiInterface = APIClient.getClient(view.getContext()).create(APIInterface.class);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                query=s;
-                page=1;
-                searchAnime(s,true);
+                query = s;
+                page = 1;
+                searchAnime(s, true);
                 return false;
             }
 
@@ -83,32 +82,32 @@ public class SearchFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(!recyclerView.canScrollVertically(1)){
-                    if(hasNextPage) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    if (hasNextPage) {
                         page++;
-                        searchAnime(query,false);
+                        searchAnime(query, false);
                     }
                 }
             }
         });
     }
 
-    public void searchAnime(String s,boolean clearAll){
-        Call<Animes> call = apiInterface.searchAnime(s,page);
+    public void searchAnime(String s, boolean clearAll) {
+        Call<Animes> call = apiInterface.searchAnime(s, page);
         call.enqueue(new Callback<Animes>() {
             @Override
             public void onResponse(Call<Animes> call, Response<Animes> response) {
                 Animes resource = response.body();
-                hasNextPage=resource.hasNextPage;
-                if(clearAll){
+                hasNextPage = resource.hasNextPage;
+                if (clearAll) {
                     animes.clear();
                     animes.addAll(resource.results);
                     animeAdapter.notifyDataSetChanged();
                     return;
                 }
-                int size=animes.size();
+                int size = animes.size();
                 animes.addAll(resource.results);
-                animeAdapter.notifyItemRangeInserted(size,animes.size()-size);
+                animeAdapter.notifyItemRangeInserted(size, animes.size() - size);
             }
 
             @Override

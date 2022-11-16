@@ -25,7 +25,8 @@ public class AnimePageEnd extends Fragment {
     private RecyclerView recyclerView;
     private AnimeAdapter animeAdapter;
 
-    public AnimePageEnd() {}
+    public AnimePageEnd() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,19 +34,18 @@ public class AnimePageEnd extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_anime_page_end, container, false);
     }
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        animeInfo = ((GlobalState)view.getContext().getApplicationContext()).getAnimeInfo();
+        animeInfo = ((GlobalState) view.getContext().getApplicationContext()).getAnimeInfo();
 
-        recyclerView=view.findViewById(R.id.aniRecommend);
+        recyclerView = view.findViewById(R.id.aniRecommend);
         recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
         animeAdapter = new AnimeAdapter(animeInfo.recommendations);
-        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(animeAdapter);
+        ScaleInAnimationAdapter scaleInAnimationAdapter = new ScaleInAnimationAdapter(animeAdapter);
         scaleInAnimationAdapter.setDuration(400);
         scaleInAnimationAdapter.setInterpolator(new OvershootInterpolator(1f));
         scaleInAnimationAdapter.setFirstOnly(false);

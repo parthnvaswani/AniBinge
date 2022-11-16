@@ -16,12 +16,13 @@ import com.example.kuro.APIClient;
 import com.example.kuro.APIInterface;
 import com.example.kuro.AnimePage;
 import com.example.kuro.AnimePlayer;
-import com.example.kuro.DatabaseHelper;
 import com.example.kuro.GlobalState;
 import com.example.kuro.R;
-import com.example.kuro.dao.ContinueWatchingDao;
-import com.example.kuro.entities.ContinueWatching;
+import com.example.kuro.models.ContinueWatching;
 import com.example.kuro.pojo.AnimeInfo;
+import com.example.kuro.utils.Utils;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -32,34 +33,31 @@ import retrofit2.Response;
 
 public class ContinueWatchingAdapter extends RecyclerView.Adapter<ContinueWatchingAdapter.ViewHolder> {
     List<ContinueWatching> animes;
-    ContinueWatchingDao continueWatchingDao;
     APIInterface apiInterface;
     GlobalState globalState;
     Context ctx;
+    private final CollectionReference conWatchRef = FirebaseFirestore.getInstance().collection("ContinueWatching");
+    private final String Uid = Utils.getUid();
 
     public ContinueWatchingAdapter(List<ContinueWatching> animes, Context context) {
         this.animes = animes;
-        continueWatchingDao=DatabaseHelper.getDB(context).continueWatchingDao();
         apiInterface = APIClient.getClient(context).create(APIInterface.class);
-        globalState=((GlobalState)context.getApplicationContext());
-        ctx=context;
+        globalState = ((GlobalState) context.getApplicationContext());
+        ctx = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.continue_watching_card,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.continue_watching_card, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ContinueWatching anime=animes.get(position);
-        holder.textView.setText("Episode "+(anime.getEpNum()+1));
-        Picasso.get().load(anime.getImg())
-                .placeholder(R.drawable.ic_baseline_broken_image_24)
-                .error(R.drawable.ic_baseline_broken_image_24)
-                .into(holder.imageView);
+        ContinueWatching anime = animes.get(position);
+        holder.textView.setText("Episode " + (anime.getEpNum() + 1));
+        Picasso.get().load(anime.getImg()).placeholder(R.drawable.ic_baseline_broken_image_24).error(R.drawable.ic_baseline_broken_image_24).into(holder.imageView);
 
         holder.info.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), AnimePage.class);
@@ -67,12 +65,15 @@ public class ContinueWatchingAdapter extends RecyclerView.Adapter<ContinueWatchi
             view.getContext().startActivity(intent);
         });
 
-        holder.close.setOnClickListener(view -> continueWatchingDao.deleteByAnimeId(anime.getAnimeId()));
+        holder.close.setOnClickListener(view -> conWatchRef.whereEqualTo("animeId", anime.getAnimeId()).whereEqualTo("uid", Uid).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            if (!queryDocumentSnapshots.isEmpty())
+                conWatchRef.document(queryDocumentSnapshots.getDocuments().get(0).getId()).delete();
+        }));
 
-        holder.cardView.setOnClickListener(view -> loadAnimeInfoAndPlay(anime.getAnimeId(),anime.getEpNum()));
+        holder.cardView.setOnClickListener(view -> loadAnimeInfoAndPlay(anime.getAnimeId(), anime.getEpNum()));
     }
 
-    public void loadAnimeInfoAndPlay(String id,int pos){
+    public void loadAnimeInfoAndPlay(String id, int pos) {
         Call<AnimeInfo> call = apiInterface.animeInfo(id);
         call.enqueue(new Callback<AnimeInfo>() {
             @Override
@@ -80,7 +81,7 @@ public class ContinueWatchingAdapter extends RecyclerView.Adapter<ContinueWatchi
                 AnimeInfo resource = response.body();
                 globalState.setAnimeInfo(resource);
                 Intent intent = new Intent(ctx, AnimePlayer.class);
-                intent.putExtra("pos", pos+"");
+                intent.putExtra("pos", pos + "");
                 ctx.startActivity(intent);
             }
 
@@ -97,16 +98,17 @@ public class ContinueWatchingAdapter extends RecyclerView.Adapter<ContinueWatchi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView,close,info;
+        ImageView imageView, close, info;
         TextView textView;
         CardView cardView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView=itemView.findViewById(R.id.animeImage);
-            close=itemView.findViewById(R.id.close);
-            info=itemView.findViewById(R.id.info);
-            textView=itemView.findViewById(R.id.epNum);
-            cardView=itemView.findViewById(R.id.cardView);
+            imageView = itemView.findViewById(R.id.animeImage);
+            close = itemView.findViewById(R.id.close);
+            info = itemView.findViewById(R.id.info);
+            textView = itemView.findViewById(R.id.epNum);
+            cardView = itemView.findViewById(R.id.cardView);
         }
     }
 }

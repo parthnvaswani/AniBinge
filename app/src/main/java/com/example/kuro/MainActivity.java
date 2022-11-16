@@ -20,9 +20,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tabLayout=findViewById(R.id.tabLayout);
-        viewPager2=findViewById(R.id.viewPager);
-        viewPagerAdapter=new ViewPagerAdapter(this);
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager2 = findViewById(R.id.viewPager);
+        viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager2.setAdapter(viewPagerAdapter);
         viewPager2.setUserInputEnabled(false);
 

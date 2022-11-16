@@ -42,14 +42,14 @@ public class AnimeInfo {
     @SerializedName("type")
     public String type;
 
-    public static class Trailer{
+    public static class Trailer {
         @SerializedName("id")
         public String id;
         @SerializedName("thumbnail")
         public String thumbnail;
     }
 
-    public static class Episode{
+    public static class Episode {
         @SerializedName("id")
         public String id;
         @SerializedName("title")

@@ -10,7 +10,7 @@ public class Anime {
     @SerializedName("image")
     public String image;
 
-    public static class Title{
+    public static class Title {
         @SerializedName("romaji")
         public String romaji;
         @SerializedName("english")

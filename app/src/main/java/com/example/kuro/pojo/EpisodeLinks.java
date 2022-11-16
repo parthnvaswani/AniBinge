@@ -8,7 +8,7 @@ public class EpisodeLinks {
     @SerializedName("sources")
     public List<Source> sources;
 
-    public static class Source{
+    public static class Source {
         @SerializedName("url")
         public String url;
     }

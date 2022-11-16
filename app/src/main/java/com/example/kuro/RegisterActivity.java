@@ -10,7 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kuro.models.UserModel;
+import com.example.kuro.models.User;
+import com.example.kuro.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,7 +32,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Registering...");
         firebaseFirestore = FirebaseFirestore.getInstance();
         fullName = findViewById(R.id.fullName);
         emailAddress = findViewById(R.id.emailAddress);
@@ -44,18 +44,18 @@ public class RegisterActivity extends AppCompatActivity {
             String email = emailAddress.getText().toString().trim();
             String password = pwd.getText().toString();
 
-            if(name.length()==0||email.length()==0||password.length()==0){
+            if (name.length() == 0 || email.length() == 0 || password.length() == 0) {
                 Toast.makeText(this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            progressDialog.setMessage("Registering...");
             progressDialog.show();
 
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(authResult -> {
                 startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                 finish();
                 progressDialog.cancel();
-                firebaseFirestore.collection("User").document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).set(new UserModel(name, email));
+                firebaseFirestore.collection("User").document(Objects.requireNonNull(Utils.getUid())).set(new User(name, email));
             }).addOnFailureListener(e -> {
                 Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 progressDialog.cancel();

@@ -20,17 +20,11 @@ public class APIClient {
         File httpCacheDirectory = new File(ctx.getCacheDir(), "http-cache");
         int cacheSize = 30 * 1024 * 1024;
         Cache cache = new Cache(httpCacheDirectory, cacheSize);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new CacheInterceptor())
-                .cache(cache)
-                .build();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().addNetworkInterceptor(new CacheInterceptor()).cache(cache).build();
 
         return new Retrofit.Builder()
 //                .baseUrl("https://ani-binge.herokuapp.com/meta/anilist/")
-                .baseUrl("https://api.consumet.org/meta/anilist/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build();
+                .baseUrl("https://api.consumet.org/meta/anilist/").addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build();
     }
 
     public static class CacheInterceptor implements Interceptor {
@@ -38,15 +32,9 @@ public class APIClient {
         public Response intercept(Chain chain) throws IOException {
             Response response = chain.proceed(chain.request());
 
-            CacheControl cacheControl = new CacheControl.Builder()
-                    .maxAge(30, TimeUnit.MINUTES)
-                    .build();
+            CacheControl cacheControl = new CacheControl.Builder().maxAge(30, TimeUnit.MINUTES).build();
 
-            return response.newBuilder()
-                    .removeHeader("Pragma")
-                    .removeHeader("Cache-Control")
-                    .header("Cache-Control", cacheControl.toString())
-                    .build();
+            return response.newBuilder().removeHeader("Pragma").removeHeader("Cache-Control").header("Cache-Control", cacheControl.toString()).build();
         }
     }
 

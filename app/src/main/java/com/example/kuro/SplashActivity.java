@@ -18,8 +18,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             if (Utils.getUid() != null)
                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
-            else
-                startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
+            else startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
             finish();
         }, 1000);
     }

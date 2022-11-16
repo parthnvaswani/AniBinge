@@ -1,40 +1,38 @@
-package com.example.kuro.entities;
+package com.example.kuro.models;
 
-
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-
-@Entity(tableName = "ContinueWatching")
 public class ContinueWatching {
-    @PrimaryKey
-    @ColumnInfo(name = "animeId")
-    @NonNull
     private String animeId;
-    @ColumnInfo(name = "img")
     private String img;
-    @ColumnInfo(name = "epNum")
     private int epNum;
-    @ColumnInfo(name = "position")
     private long position;
-    @ColumnInfo(name = "updatedAt")
-    private long updatedAt = System.currentTimeMillis();
+    private long updatedAt;
+    private String Uid;
 
-    public ContinueWatching(@NonNull String animeId, String img, int epNum, long position) {
+    public ContinueWatching() {
+    }
+
+    public ContinueWatching(String animeId, String img, int epNum, long position, String uid) {
         this.animeId = animeId;
         this.img = img;
         this.epNum = epNum;
         this.position = position;
+        this.updatedAt = System.currentTimeMillis();
+        this.Uid = uid;
     }
 
-    @NonNull
+    public String getUid() {
+        return Uid;
+    }
+
+    public void setUid(String uid) {
+        Uid = uid;
+    }
+
     public String getAnimeId() {
         return animeId;
     }
 
-    public void setAnimeId(@NonNull String animeId) {
+    public void setAnimeId(String animeId) {
         this.animeId = animeId;
     }
 
