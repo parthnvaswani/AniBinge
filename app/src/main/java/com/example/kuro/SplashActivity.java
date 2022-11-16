@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kuro.utils.Utils;
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override
@@ -14,8 +16,10 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         new Handler().postDelayed(() -> {
-            Intent i = new Intent(SplashActivity.this, RegisterActivity.class);
-            startActivity(i);
+            if (Utils.getUid() != null)
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            else
+                startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
             finish();
         }, 1000);
     }
