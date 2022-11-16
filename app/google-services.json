@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "556877608891",
+    "project_id": "anibinge-49ecd",
+    "storage_bucket": "anibinge-49ecd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556877608891:android:e7eb9421ebfea588bb769e",
+        "android_client_info": {
+          "package_name": "com.example.anibinge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556877608891-d55a80umae36j51rbvmt6r6cfvkhdjr0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT345UtrUWXxQnimQg-fK7OYZ_CkDwjpo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556877608891-d55a80umae36j51rbvmt6r6cfvkhdjr0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
