@@ -242,12 +242,14 @@ public class HomeFragment extends Fragment {
 
     public void getContinueWatching() {
         conWatchRef.whereEqualTo("uid", Uid).addSnapshotListener((value, error) -> {
-            continueWatchingList.clear();
-            for (DocumentSnapshot doc : Objects.requireNonNull(value).getDocuments())
-                continueWatchingList.add(doc.toObject(ContinueWatching.class));
-            continueWatchingAdapter.notifyDataSetChanged();
-            if (continueWatchingList.size() != 0) continueCards.setVisibility(View.VISIBLE);
-            else continueCards.setVisibility(View.GONE);
+            if(value!=null) {
+                continueWatchingList.clear();
+                for (DocumentSnapshot doc : value.getDocuments())
+                    continueWatchingList.add(doc.toObject(ContinueWatching.class));
+                continueWatchingAdapter.notifyDataSetChanged();
+                if (continueWatchingList.size() != 0) continueCards.setVisibility(View.VISIBLE);
+                else continueCards.setVisibility(View.GONE);
+            }
         });
     }
 }
