@@ -43,3 +43,21 @@ project.
 - Anime Recommendations
 - Anime Player with sub and dub options
 - Data Caching
+
+## Screenshots:
+
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/icon.jpg" /><img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/splash.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/register.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/login.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/home.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/home2.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/random_anime_desc.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/search.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/profile.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page_desc.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page_expanded.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page_left_panel.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page_right_panel.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/player1.jpg" />
+<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/player2.jpg" />
