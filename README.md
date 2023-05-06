@@ -46,18 +46,18 @@ project.
 
 ## Screenshots:
 
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/icon.jpg" /><img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/splash.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/register.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/login.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/home.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/home2.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/random_anime_desc.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/search.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/profile.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page_desc.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page_expanded.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page_left_panel.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/anime_page_right_panel.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/player1.jpg" />
-<img height="400" src="https://github.com/parthnvaswani/Images/blob/main/AniBinge/player2.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644160-6cd11d00-76b1-4d76-a47c-525545249ec7.jpg" /><img height="400" src="https://user-images.githubusercontent.com/53994579/236644231-43998508-eb11-427b-af61-dd012182bde5.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644266-c481d8fc-f230-4dc6-bc25-985acf82cff5.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644271-909291d8-b068-4320-a461-e771ded56d0d.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644279-45d60ee9-365b-42c5-8705-0791416b5962.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644281-b7303687-4e3d-42e6-afac-12bee2139f1b.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644295-8dc96597-841c-4b6d-abbd-62d3622fac55.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644301-7db13fb8-0c6f-4d77-b50a-ce8e1f7024a9.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644305-a319da7e-0262-4069-a74e-9dfa01225adf.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644326-63f139b1-7f4f-4d54-a373-7f1f2214e59c.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644332-247d4fb3-5f87-4211-b6f6-cd3c57485984.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644342-932a0351-1825-4181-ac11-be00ffadd57b.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644360-da2837de-89e7-4e38-8869-cb74540a5313.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644364-ef753bba-fbe4-460b-b0f4-c5aed5be92c4.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644367-63fac08b-6973-4475-8d31-3128c8408886.jpg" />
+<img height="400" src="https://user-images.githubusercontent.com/53994579/236644370-0a3c7003-b205-4e94-817f-ca28319d345b.jpg" />
